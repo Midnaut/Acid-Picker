@@ -26,10 +26,10 @@
 # will select the associated control assuming you have named and configured the picker
 # correctly. 
 #
-# click : replace selection with object
-# shift + click: will add object to selection.
+# click : replace selection with object.
+# shift + click : add object to selection.
+# control + click : remove oject from selection.
 # 
-
 
 
 import os
