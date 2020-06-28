@@ -29,7 +29,7 @@ This will present the config loader
 
 If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file.
 
-![Picker](https://imgur.com/8cfl3Ef.png)
+![Picker](https://i.imgur.com/JvOwlQl.png)
 
 Clicking on a button will replace selection with the object, shift click will add to selection and control click will deselect. 
 
