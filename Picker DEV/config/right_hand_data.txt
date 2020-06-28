@@ -1,0 +1,66 @@
+{
+    "config": {
+        "color": [
+            1.0, 
+            0.0, 
+            0.0
+        ], 
+        "control_prefix": "R_", 
+        "control_suffix": "_CTL", 
+        "group_count": 5, 
+        "max_members": 4, 
+        "set_name": "Right Hand",
+        "set_key" : "fingers"
+    }, 
+    "fingers": [
+        {
+            "control_count": 4, 
+            "controls": [
+                "pinkie0", 
+                "pinkie1", 
+                "pinkie2", 
+                "pinkie3"
+            ], 
+            "name": "pinkie"
+        },
+        {
+            "control_count": 4, 
+            "controls": [
+                "ring0", 
+                "ring1", 
+                "ring2", 
+                "ring3"
+            ], 
+            "name": "ring"
+        },
+        {
+            "control_count": 4, 
+            "controls": [
+                "middle0", 
+                "middle1", 
+                "middle2", 
+                "middle3"
+            ], 
+            "name": "middle"
+        },
+        {
+            "control_count": 4, 
+            "controls": [
+                "index0", 
+                "index1", 
+                "index2", 
+                "index3"
+            ], 
+            "name": "index"
+        }, 
+        {
+            "control_count": 3, 
+            "controls": [
+                "thumb0", 
+                "thumb1", 
+                "thumb2"
+            ], 
+            "name": "thumb"
+        } 
+    ]
+}
