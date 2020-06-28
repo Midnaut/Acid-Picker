@@ -23,7 +23,7 @@ acid_picker.config_loader_ui()
 ```
 
 This will present the config loader
-![Config Loader](https://imgur.com/smSO4QI.ong)
+![Config Loader](https://imgur.com/smSO4QI.png)
 
 If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file.
 ![Picker](https://imgur.com/8cfl3Ef.png)
