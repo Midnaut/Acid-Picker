@@ -6,6 +6,7 @@
 #             Email: luke.l.davenport@gmail.com
 #             Website: www.davenportcreations.com
 #             Repo: https://github.com/Midnaut/Acid-Picker
+#             License: [MIT] https://choosealicense.com/licenses/mit/
 #
 #/--------------------------------------------------------------------------------////
 #                  I N S T A L L A T I O N:
@@ -34,6 +35,7 @@
 import os
 import maya.cmds as cmds
 import json
+import webbrowser
 
 
 IMG_PATH = os.path.dirname(__file__) + "/img/"
@@ -227,7 +229,7 @@ def load_config():
     if os.path.isfile(config_file_path):
         picker_ui(config_file = config_file)
     else:
-        create_error_dialog("Warning! file : {0} does not exist, please check and try again.".format(config_file_path))
+        create_error_dialog("Warning! file : {0} does not exist in the config file path.\nPlease check and try again.".format(config_file))
 
 
 def config_loader_ui():
