@@ -23,9 +23,11 @@ acid_picker.config_loader_ui()
 ```
 
 This will present the config loader
+
 ![Config Loader](https://imgur.com/smSO4QI.png)
 
 If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file.
+
 ![Picker](https://imgur.com/8cfl3Ef.png)
 
 Clicking on a button will replace selection with the object, shift click will add to selection instead.
@@ -33,6 +35,7 @@ Clicking on a button will replace selection with the object, shift click will ad
 ### Config File
 
 ![Config file](https://imgur.com/5bmMO5M.png)
+
 The config file is used to determine what will be diaplayed inside the window.
 
 when loaded, in the order described inside the file, the buttons will be loaded in and arranged in a gird based off of the groups inside the set.
