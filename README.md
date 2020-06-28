@@ -31,17 +31,19 @@ If you dont have the default data, you can generate it, loading the default data
 
 ![Picker](https://imgur.com/8cfl3Ef.png)
 
-Clicking on a button will replace selection with the object, shift click will add to selection instead.
+Clicking on a button will replace selection with the object, shift click will add to selection and control click will deselect. 
 
 ### Config File
 
-![Config file](https://imgur.com/5bmMO5M.png)
+![Config file](https://i.imgur.com/KCbjglf.png)
 
 The config file is used to determine what will be diaplayed inside the window.
 
 when loaded, in the order described inside the file, the buttons will be loaded in and arranged in a gird based off of the groups inside the set.
 
 A Set defines the totality of the controls : in this case, Fingers
+in the case of having more than one set, you will be presented with tabs that contain the name of the set
+
 A group inside the set will provide a comlumn inside the grid : in this case, the individual finger controls
 
 In the order that the group is defined, it will be made a column inside the grid. as you can see the thumb has less members and the grid will accomadate for that as needed.
