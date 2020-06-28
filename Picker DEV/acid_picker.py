@@ -1,6 +1,35 @@
-#******************************************************************************
-# author      = luke.l.davenport@gmail.com
-#******************************************************************************
+#/--------------------------------------------------------------------------------////
+#
+#             acid_picker.py 
+#             version 0.1, last modified 28-06-2020
+#             Copyright (C) 2020 Luke Davenport
+#             Email: luke.l.davenport@gmail.com
+#             Website: www.davenportcreations.com
+#             Repo: https://github.com/Midnaut/Acid-Picker
+#
+#/--------------------------------------------------------------------------------////
+#                  I N S T A L L A T I O N:
+#
+# this script will do its best to generate thee required assets it needs but you should
+# download the entire picker folder and add its path to the userSetup. 
+# Then, inside either a shelf button or script window you should call:
+# acid_picker.config_loader_ui()
+#
+#                         U S A G E:
+#
+# the loader UI will search for a default data file to configure the window,
+# if you dont have or have a corrupted data file, create new data file will give you
+# a clean template.
+#
+# with a config loaded, you will be presented with a grid of buttons, clicking on a button
+# will select the associated control assuming you have named and configured the picker
+# correctly. 
+#
+# click : replace selection with object
+# shift + click: will add object to selection.
+# 
+
+
 
 import os
 import maya.cmds as cmds
@@ -104,6 +133,15 @@ def modified_select(name):
     else:
         print("Warning! Object {0} does not exist, please check your configuration.".format(name))
 
+def create_error_dialog(message_text):
+    result = cmds.confirmDialog(title='ERROR',
+                                message=message_text,
+                                button=['OKAY', 'HELP'],
+                                defaultButton='OKAY')
+
+    if result == "HELP":
+        webbrowser.open("https://github.com/Midnaut/Acid-Picker")
+
 def dynamic_button_layout(config_file):
     #load in the settings data
     settings_data = load_data_file(config_file)
@@ -186,10 +224,10 @@ def load_config():
     config_file = cmds.textField('config_file_name', query=True, text= True)
     config_file_path = CONFIG_PATH+config_file
 
-    if os.path.isfile(CONFIG_PATH):
-            picker_ui(config_file = config_file)
+    if os.path.isfile(config_file_path):
+        picker_ui(config_file = config_file)
     else:
-        print("Warning! file : {0} does not exist, please check and try again.".format(config_file_path))
+        create_error_dialog("Warning! file : {0} does not exist, please check and try again.".format(config_file_path))
 
 
 def config_loader_ui():
