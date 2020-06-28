@@ -1,6 +1,7 @@
 # Acid-Picker
 
 Acid picker is a Maya tool for customizable control picking.
+![Acid Picker](https://i.imgur.com/95nZ4l8.gifv)
 
 ## Installation
 
