@@ -54,9 +54,13 @@ def load_data_file(config_file):
 
     print("Loading config file: {0}".format(config_file_path))
     
-    with open(config_file_path) as json_file:
-        data = json.load(json_file)
-    return data
+    try:
+        with open(config_file_path) as json_file:
+            data = json.load(json_file)
+        return data
+    except ValueError:  
+        create_error_dialog("Decoding JSON has failed.\nPlease validate your json and try again.".format(config_file))
+
 
 def confirm_new_data_file():
     result = cmds.confirmDialog(title='New Default Config File?',
@@ -73,30 +77,38 @@ def confirm_new_data_file():
 #used for creating a demo file that the user can modify for purpose
 def create_default_data_file():
     data = {}
-    data['fingers'] = []
+    data['left_hand'] = {
+        'name': 'Left Hand',
+        'groups': [],
+        'color' : (0.0, 0.0, 1.0),
+        'group_count' : 5,
+        'max_members' : 4,
+        'control_prefix' : 'L_',
+        'control_suffix' : '_CTL'
+    }
 
     #add the definitions for the fingers
-    data['fingers'].append({
+    data['left_hand']['groups'].append({
         'name': 'thumb',
         'controls': ['thumb0', 'thumb1', 'thumb2'],
         'control_count': 3
     })
-    data['fingers'].append({
+    data['left_hand']['groups'].append({
         'name': 'index',
         'controls': ['index0', 'index1', 'index2', 'index3'],
         'control_count': 4
     })
-    data['fingers'].append({
+    data['left_hand']['groups'].append({
         'name': 'middle',
         'controls': ['middle0', 'middle1', 'middle2', 'middle3'],
         'control_count': 4
     })
-    data['fingers'].append({
+    data['left_hand']['groups'].append({
         'name': 'ring',
         'controls': ['ring0', 'ring1', 'ring2', 'ring3'],
         'control_count': 4
     })
-    data['fingers'].append({
+    data['left_hand']['groups'].append({
         'name': 'pinkie',
         'controls': ['pinkie0', 'pinkie1', 'pinkie2', 'pinkie3'],
         'control_count': 4
@@ -104,13 +116,8 @@ def create_default_data_file():
 
     #additional config data
     data['config'] = {
-        'set_name' : 'Left Hand',
-        'set_key' : 'fingers',
-        'group_count' : 5,
-        'max_members' : 4,
-        'control_prefix' : 'L_',
-        'control_suffix' : '_CTL',
-        'color' : (0.0, 0.0, 1.0)
+        'set_name' : 'Default Data',
+        'set_keys' : ['left_hand'],
     }
     
     new_file_path = CONFIG_PATH + 'default_data.txt'
@@ -123,7 +130,16 @@ def create_default_data_file():
 
 def is_shift_down(*args):
     mods = cmds.getModifiers()
+    #bitwise 1 to get if shift down
     if (mods & 1) > 0:
+        return True
+    else:
+        return False
+
+def is_control_down(*args):
+    mods = cmds.getModifiers()
+    #bitwise 4 to get if control down
+    if (mods & 4) > 0:
         return True
     else:
         return False
@@ -131,7 +147,15 @@ def is_shift_down(*args):
 #select that is set to add if shift is held down
 def modified_select(name):
     if cmds.objExists(name):
-        cmds.select(name, add=is_shift_down())
+        #add to selection
+        if is_shift_down():
+            cmds.select(name, add=True)
+        #remove from selection
+        elif is_control_down():
+            cmds.select(name, deselect = True)
+        #non modified behavior
+        else:
+            cmds.select(name)
     else:
         print("Warning! Object {0} does not exist, please check your configuration.".format(name))
 
@@ -148,35 +172,65 @@ def dynamic_button_layout(config_file):
     #load in the settings data
     settings_data = load_data_file(config_file)
 
-    #going to make a grid for the hand controls, this is a POC but in future other layouts would be good
-    cmds.gridLayout( numberOfColumns=settings_data['config']['group_count'], cellWidthHeight=(50, 50) )
+    #for each key in set keys make a new tab, named after the name
+    set_keys = settings_data['config']['set_keys']
+    
+    #make our layout objects
+    form = cmds.formLayout()
+    tabs = cmds.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
 
-    control_prefix = settings_data['config']['control_prefix']
-    control_suffix = settings_data['config']['control_suffix']
-    color = settings_data['config']['color']
+    #set padding
+    cmds.formLayout( form, edit=True, attachForm=((tabs, 'top', 0), (tabs, 'left', 0), (tabs, 'bottom', 0), (tabs, 'right', 0)) )
+
+    tab_name_list = []
+    tab_content_list = []
+
+    for key in set_keys:
+        #get the display name for the tab
+        tab_name = settings_data[key]['name']
+        tab_name_list.append(tab_name)
+
+        #this created the content in the form of a grid layout
+        content = add_control_grid(settings_data, key)
+        tab_content_list.append(content)
+
+    #make the tuple how maya wants it
+    tab_label_tuple = tuple((content,name) for content, name in zip(tab_content_list, tab_name_list))
+
+    print(tab_label_tuple)
+    #add the contents
+    cmds.tabLayout( tabs, edit=True, tabLabel=tab_label_tuple)
+
+    #escape the layout
+    cmds.setParent('..')
+
+def add_control_grid(settings_data, set_key):
+    #used to fetch the control set
+    control_set = settings_data[set_key]
+
+    #going to make a grid for the hand controls, this is a POC but in future other layouts would be good
+    grid = cmds.gridLayout( numberOfColumns=control_set['group_count'], cellWidthHeight=(50, 50) )
+
+    control_prefix = control_set['control_prefix']
+    control_suffix = control_set['control_suffix']
+    color = control_set['color']
 
     #formatting information would ideally be standardised across the auto rigger, still, POC
     template = control_prefix+"{0}"+control_suffix
 
-    #used to fetch the set key
-    set_key = settings_data['config']['set_key']
-    control_set = settings_data[set_key]
-
     #add the column headers
-    for item in control_set:
+    for item in control_set['groups']:
         cmds.text(label = item['name'], backgroundColor = COLOR_ORANGE)
 
     #cast to int from string in the json
-    max_group_members = int(settings_data['config']['max_members'])
-    #loop over these in such a way to get all the 1st, 2nd...etc  controls up to max
+    max_group_members = int(control_set['max_members'])
 
     for i in range(max_group_members):
         #fetch required data for the individual controls
-        control_set = settings_data[set_key] #eg "fingers"
-
+        control_set = settings_data[set_key] #eg "Left Hand"
 
         #i know nested for loops are bad but the gridlayout wants it this way
-        for group in control_set: #for each finger in the finger set
+        for group in control_set['groups']: #for each finger in the left hand set
 
             #get how many controls are in this group
             control_count = int(group['control_count'])
@@ -190,11 +244,13 @@ def dynamic_button_layout(config_file):
                 cmds.button(label = controls[i], backgroundColor = color, command = command_text)
 
             else:
-                cmds.text("") #empty label to take up layout slot
+                cmds.separator(style='none') #take up layout slot
 
 
     #escape the grid layout 
     cmds.setParent('..')
+    #return this grid layout so it can be made into a tab
+    return grid
 
 
 def picker_ui(config_file = "default_data.txt"):
@@ -214,7 +270,7 @@ def picker_ui(config_file = "default_data.txt"):
 
     #header bar
     cmds.rowLayout(numberOfColumns = 2, adjustableColumn = 2, backgroundColor = COLOR_DARK_GRAY)
-    img = cmds.image(image=IMG_PATH + 'picker_icon.png')
+    img = cmds.image(image=IMG_PATH + 'picker_icon_small.png')
     cmds.text( label='Control Picker', font = 'boldLabelFont')
     cmds.setParent('..')
     
