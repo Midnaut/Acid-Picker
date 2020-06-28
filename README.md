@@ -39,7 +39,7 @@ Clicking on a button will replace selection with the object, shift click will ad
 
 The config file is used to determine what will be diaplayed inside the window.
 
-when loaded, in the order described inside the file, the buttons will be loaded in and arranged in a gird based off of the groups inside the set.
+when loaded, in the order described inside the file, the buttons will be loaded in and arranged in a gird based off of the groups inside the set. The oder of set keys will also order the tabs.
 
 A Set defines the totality of the controls : in this case, Fingers
 in the case of having more than one set, you will be presented with tabs that contain the name of the set
