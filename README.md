@@ -12,7 +12,7 @@ import sys
 
 sys.path.append(Path to folder) 
 import acid_picker
-
+import acid_picker_IO
 ```
 
 ## Usage
