@@ -27,7 +27,7 @@ This will present the config loader
 
 ![Config Loader](https://i.imgur.com/IrMrnYf.png)
 
-If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file.
+If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file. Also, if you have referenced in a rig, and it is using a namespace, throw the name of the namespace in the box and it will configure the window to target your referenced model.
 
 ![Picker](https://i.imgur.com/6QVJEuF.png)
 
