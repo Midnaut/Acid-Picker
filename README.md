@@ -54,6 +54,8 @@ The most important part of the config file is your naming convention. I personal
 
 group count and max members are needed again for correct layout, this will provide the width and height of the grid respectively, while this could be fetched from the file itself, the idea the tool to be as performant as possible and offloading this to config file instead of the multiple for loops required for this would be an unwanted hit, feel free to tinker with this is you like!
 
+In general, the concept of using the config file to do work that would usually need a lot of looping like getting the count of lists etc. So when editing make sure that you are keeping in mind your group counts, max values etc
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
