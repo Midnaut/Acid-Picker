@@ -37,7 +37,7 @@ Left is the basic file setup, where every set key will get it's own tab, the adv
 
 ### Config File
 
-![Config file](https://i.imgur.com/KCbjglf.png)
+![Config file](https://imgur.com/m7iKT38.png)
 
 The config file is used to determine what will be diaplayed inside the window.
 
