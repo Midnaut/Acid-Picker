@@ -25,13 +25,15 @@ acid_picker.config_loader_ui()
 
 This will present the config loader
 
-![Config Loader](https://imgur.com/smSO4QI.png)
+![Config Loader](https://i.imgur.com/IrMrnYf.png)
 
 If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file.
 
-![Picker](https://i.imgur.com/JvOwlQl.png)
+![Picker](https://i.imgur.com/6QVJEuF.png)
 
 Clicking on a button will replace selection with the object, shift click will add to selection and control click will deselect. 
+
+Left is the basic file setup, where every set key will get it's own tab, the advanced example is for making compound tabs made of other sets.
 
 ### Config File
 
