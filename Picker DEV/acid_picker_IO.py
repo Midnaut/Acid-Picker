@@ -26,6 +26,7 @@ import maya.cmds as cmds
 import json
 import webbrowser
 import acid_picker
+import logging
 
 #file adressing constants
 IMG_PATH = os.path.join( os.path.dirname(__file__), "img")
@@ -36,6 +37,13 @@ LOADER_UI_PATH = "acid_picker_config_loader|all_content|"
 NAMESPACE_UI_PATH = LOADER_UI_PATH + "namespace_row|object_namespace"
 FILEPATH_UI_PATH = LOADER_UI_PATH + "file_open_row|config_file_name"
 
+log = logging.getLogger('acid_picker_IO')
+
+def init_picker_IO(debug = False):
+    if debug:
+        log.setLevel(logging.DEBUG)
+    else:
+        log.setLevel(logging.INFO)
 
 def browse_files():
     json_filter = "*.json"
@@ -52,8 +60,7 @@ def browse_files():
         cmds.textField(FILEPATH_UI_PATH, edit=True, text=chosen_file)
 
 def load_data_file(config_file):
-
-    print("Loading config file: {0}".format(config_file))
+    log.debug("Loading config file: {0}".format(config_file))
     
     try:
         with open(config_file) as json_file:
@@ -66,6 +73,8 @@ def load_data_file(config_file):
         "Please validate your json and try again."
         )
 
+        log.debug(message_string)
+        
         acid_picker.create_error_dialog(message_string)
 
 def confirm_new_data_file(advanced = False):
@@ -97,8 +106,8 @@ def confirm_new_data_file(advanced = False):
 def load_config():
     picker_namespace = cmds.textField(NAMESPACE_UI_PATH, query=True, text= True)
     config_file = cmds.textField(FILEPATH_UI_PATH, query=True, text= True)
-
-    print("object_namespace:"+ picker_namespace)
+        
+    log.debug("object_namespace: {0}".format(picker_namespace))
 
     if os.path.isfile(config_file):
         acid_picker.picker_ui(config_file = config_file, picker_namespace = picker_namespace)
@@ -107,9 +116,10 @@ def load_config():
         message_string = (
         "Warning! file : {0} does not exist in the config file path.\n"
         "Please check and try again."
-        )
+        ).format(config_file)
 
-        acid_picker.create_error_dialog(message_string.format(config_file))
+        log.debug(message_string)
+        acid_picker.create_error_dialog(message_string)
 
 
 def get_basic_data():
@@ -180,7 +190,7 @@ def create_basic_example():
     with open(new_file_path, 'w') as outfile:
         json.dump(data, outfile, indent = 4, sort_keys = True)
 
-    print("New file added at {0}".format(new_file_path))
+    log.info("New file added at {0}".format(new_file_path))
 
 #used for creating a demo file that the user can modify for purpose
 def create_advanced_example():
@@ -205,6 +215,6 @@ def create_advanced_example():
     with open(new_file_path, 'w') as outfile:
         json.dump(data, outfile, indent = 4, sort_keys = True)
 
-    print("New file added at {0}".format(new_file_path))
+    log.info("New file added at {0}".format(new_file_path))
 
 

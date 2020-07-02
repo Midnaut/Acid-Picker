@@ -37,10 +37,19 @@ import copy
 import acid_picker_IO
 import maya.mel as mel
 
+import logging
+
 
 COLOR_DARK_GRAY = (0.15,0.15,0.15)
 COLOR_ORANGE = (0.87, 0.51, 0.01)
 
+log = logging.getLogger('acid_picker')
+
+def init_picker(debug = False):
+    if debug:
+        log.setLevel(logging.DEBUG)
+    else:
+        log.setLevel(logging.INFO)
 
 def handle_set_overrides(settings_data, set_key):
     
@@ -117,9 +126,8 @@ def modified_select(name):
         message_string = (
             "Warning! Object {0} does not exist\n"+
             "Please check your configuration."
-            )
-
-        print(message_string.format(name))
+            ).format(name)
+        log.warning(message_string)
 
 def create_error_dialog(message_text):
     result = cmds.confirmDialog(title='ERROR',
@@ -220,10 +228,12 @@ def add_super_set_tabs(settings_data, set_keys, tab_name_list,
         else:
             #error, no valid super set style
             message_string = (
-            "Warning! Super Set : {0} does not contain a valid set_style.\n"
+            "Error! Super Set : {0} does not contain a valid set_style.\n"
             "Please check and try again."
-            )
-            create_error_dialog(message_string.format(tab_name))
+            ).format(tab_name)
+
+            log.debug(message_string)
+            create_error_dialog(message_string)
 
         for set_key in sub_sets: 
             #get  the control set, with overrides applied
@@ -297,15 +307,15 @@ def add_control_grid(control_set, picker_namespace):
 
 
 def window_cleanup(ui_title):
+
     if cmds.window(ui_title, exists=True):
-        print('CLOSE duplicate window')
+        log.debug("Closed duplicate window: {0}".format(ui_title))
         cmds.deleteUI(ui_title)
 
     #delete existing preferences
     if cmds.windowPref(ui_title, exists = True):
+        log.debug("Cleaned window preference: {0}".format(ui_title))
         cmds.windowPref(ui_title, remove = True)
-
-
 
 
 def picker_ui(config_file = "default_data.json", picker_namespace = ""):
@@ -332,7 +342,13 @@ def picker_ui(config_file = "default_data.json", picker_namespace = ""):
     cmds.showWindow(window)
 
 
-def config_loader_ui():
+def config_loader_ui(debug=False):
+    #setup logging 
+    init_picker(debug)
+    acid_picker_IO.init_picker_IO(debug)
+
+    log.debug("Entering Debug Mode: {0}".format(debug))
+
     ui_title = 'acid_picker_config_loader'
     window_cleanup(ui_title)
 
