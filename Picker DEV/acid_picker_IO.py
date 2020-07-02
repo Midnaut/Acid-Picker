@@ -1,7 +1,7 @@
 #/--------------------------------------------------------------------------------////
 #
 #             acid_picker_IO.py 
-#             version 0.1, last modified 28-06-2020
+#             version 0.1, last modified 02-07-2020
 #             Copyright (C) 2020 Luke Davenport
 #             Email: luke.l.davenport@gmail.com
 #             Website: www.davenportcreations.com
@@ -27,17 +27,36 @@ import json
 import webbrowser
 import acid_picker
 
+#file adressing constants
 IMG_PATH = os.path.join( os.path.dirname(__file__), "img")
 CONFIG_PATH = os.path.join( os.path.dirname(__file__), "config")
 
+#ui component adressing constants
+LOADER_UI_PATH = "acid_picker_config_loader|all_content|"
+NAMESPACE_UI_PATH = LOADER_UI_PATH + "namespace_row|object_namespace"
+FILEPATH_UI_PATH = LOADER_UI_PATH + "file_open_row|config_file_name"
+
+
+def browse_files():
+    json_filter = "*.json"
+    chosen_file_list = cmds.fileDialog2(fileFilter=json_filter,
+                                caption = "Open Config File",
+                                dialogStyle=2,
+                                fileMode = 1,
+                                startingDirectory = CONFIG_PATH)
+    
+    if chosen_file_list != None:
+        #we will only open one file at a time
+        chosen_file = chosen_file_list[0]
+        #update the UI here
+        cmds.textField(FILEPATH_UI_PATH, edit=True, text=chosen_file)
+
 def load_data_file(config_file):
 
-    config_file_path = os.path.join(CONFIG_PATH, config_file)
-
-    print("Loading config file: {0}".format(config_file_path))
+    print("Loading config file: {0}".format(config_file))
     
     try:
-        with open(config_file_path) as json_file:
+        with open(config_file) as json_file:
             data = json.load(json_file)
         return data
     except ValueError:  
@@ -52,8 +71,15 @@ def load_data_file(config_file):
 def confirm_new_data_file(advanced = False):
 
     message_string = ("Warning!\n"+
-    "This will overwrite any data in the default_data file if it exists!\n"
+    "This will overwrite any data in the {0} file if it exists!\n"
     "Are you sure you want to proceed?")
+
+    if advanced:
+        file_name = "Advanced Example"
+    else:
+        file_name = "Basic Example" 
+
+    message_string = message_string.format(file_name)
 
     result = cmds.confirmDialog(title='New Default Config File?',
                                 icon = 'warning',
@@ -69,14 +95,12 @@ def confirm_new_data_file(advanced = False):
             create_basic_example()
 
 def load_config():
-    picker_namespace = cmds.textField('object_namespace', query=True, text= True)
-    config_file = cmds.textField('config_file_name', query=True, text= True)
+    picker_namespace = cmds.textField(NAMESPACE_UI_PATH, query=True, text= True)
+    config_file = cmds.textField(FILEPATH_UI_PATH, query=True, text= True)
 
     print("object_namespace:"+ picker_namespace)
 
-    config_file_path = os.path.join(CONFIG_PATH,config_file)
-
-    if os.path.isfile(config_file_path):
+    if os.path.isfile(config_file):
         acid_picker.picker_ui(config_file = config_file, picker_namespace = picker_namespace)
     else:
 
@@ -151,7 +175,7 @@ def create_basic_example():
     
     data = get_basic_data()
     
-    new_file_path = os.path.join(CONFIG_PATH, 'default_data.json')
+    new_file_path = os.path.join(CONFIG_PATH, 'basic_example_data.json')
     #save out the file in a nice human readable format
     with open(new_file_path, 'w') as outfile:
         json.dump(data, outfile, indent = 4, sort_keys = True)
@@ -161,7 +185,6 @@ def create_basic_example():
 #used for creating a demo file that the user can modify for purpose
 def create_advanced_example():
     data = get_basic_data()
-
 
     data['config_advanced'] = {
         'super_sets' : []
@@ -177,7 +200,7 @@ def create_advanced_example():
     data['config']['window_size'] = (510,305)
 
     
-    new_file_path = os.path.join(CONFIG_PATH, 'default_data.json')
+    new_file_path = os.path.join(CONFIG_PATH, 'advanced_example_data.json')
     #save out the file in a nice human readable format
     with open(new_file_path, 'w') as outfile:
         json.dump(data, outfile, indent = 4, sort_keys = True)

@@ -1,7 +1,7 @@
 #/--------------------------------------------------------------------------------////
 #
 #             acid_picker.py 
-#             version 0.1, last modified 28-06-2020
+#             version 0.1, last modified 02-07-2020
 #             Copyright (C) 2020 Luke Davenport
 #             Email: luke.l.davenport@gmail.com
 #             Website: www.davenportcreations.com
@@ -35,6 +35,8 @@ import os
 import maya.cmds as cmds
 import copy
 import acid_picker_IO
+import maya.mel as mel
+
 
 COLOR_DARK_GRAY = (0.15,0.15,0.15)
 COLOR_ORANGE = (0.87, 0.51, 0.01)
@@ -299,7 +301,7 @@ def add_control_grid(control_set, picker_namespace):
 def picker_ui(config_file = "default_data.json", picker_namespace = ""):
     #**************************************************************************
     #Close duplicates
-    ui_title = 'control_picker'
+    ui_title = 'acid_picker_main_window'
 
     if cmds.window(ui_title, exists=True):
         print('CLOSE duplicate window')
@@ -310,7 +312,7 @@ def picker_ui(config_file = "default_data.json", picker_namespace = ""):
     settings_data = acid_picker_IO.load_data_file(config_file)
     window_size = settings_data['config']['window_size']
 
-    window = cmds.window(title="Control Picker", widthHeight=window_size)
+    window = cmds.window(ui_title, title="Control Picker", widthHeight=window_size)
 
     cmds.columnLayout(adjustableColumn=True)
 
@@ -328,34 +330,58 @@ def picker_ui(config_file = "default_data.json", picker_namespace = ""):
 def config_loader_ui():
     #**************************************************************************
     # CLOSE if exists (avoid duplicates)
-    ui_title = 'config_loader'
+    ui_title = 'acid_picker_config_loader'
 
     if cmds.window(ui_title, exists=True):
         print('CLOSE duplicate window')
         cmds.deleteUI(ui_title)
     #**************************************************************************
 
-    window = cmds.window(title="Config Loader", widthHeight=(350, 100))
+    window = cmds.window(ui_title, title="Config Loader", widthHeight=(400, 80))
 
-    cmds.columnLayout(adjustableColumn=True)
+    column_name = "all_content"
 
-    cmds.button(label="create basic example",
-                width=350, command="acid_picker_IO.confirm_new_data_file()",
+    cmds.columnLayout(column_name, adjustableColumn=True)
+    
+    #for addressing the controls across files
+    row_title = "example_row"
+    cmds.rowLayout(row_title, 
+                numberOfColumns = 3)
+
+    cmds.text(label = "Examples", width = 75)
+    cmds.button(label="Basic",
+                command="acid_picker_IO.confirm_new_data_file()",
                 backgroundColor = COLOR_ORANGE)
-    cmds.button(label="create advanced example",
-                width=350, command="acid_picker_IO.confirm_new_data_file(advanced=True)",
+    cmds.button(label="Advanced",
+                command="acid_picker_IO.confirm_new_data_file(advanced=True)",
                 backgroundColor = COLOR_ORANGE)
+    cmds.setParent("..")
 
 
-    cmds.rowLayout(numberOfColumns = 2, adjustableColumn = 2)    
-    cmds.text(label = "Namespace")
-    cmds.textField('object_namespace')#take up layout slot
+    row_title = "namespace_row"
+    cmds.rowLayout(row_title, 
+                numberOfColumns = 3, 
+                adjustableColumn = 2)
+
+    cmds.text(label = "Namespace", width = 75)
+    cmds.textField('object_namespace')
+    cmds.button(label = "Namespaces",
+                width = 102,
+                command= "mel.eval('NamespaceEditor')",
+                backgroundColor = COLOR_ORANGE)
     cmds.setParent('..')
 
 
-    cmds.rowLayout(numberOfColumns = 3, adjustableColumn = 2)
-    cmds.text(label = "File Name   ")
-    cmds.textField('config_file_name', text= "default_data.json")
+    row_title = "file_open_row"
+    cmds.rowLayout(row_title, 
+                numberOfColumns = 4,
+                adjustableColumn = 2)
+
+    cmds.text(label = "File Name", width = 75)
+    cmds.textField('config_file_name')
+    cmds.button(label = "Browse",
+                command= "acid_picker_IO.browse_files()",
+                backgroundColor = COLOR_ORANGE)
     cmds.button(label = "Load",
                 command= "acid_picker_IO.load_config()",
                 backgroundColor = COLOR_ORANGE)
