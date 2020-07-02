@@ -297,9 +297,6 @@ def add_control_grid(control_set, picker_namespace):
 
 
 def window_cleanup(ui_title):
-    #Close duplicates
-    ui_title = 'acid_picker_main_window'
-
     if cmds.window(ui_title, exists=True):
         print('CLOSE duplicate window')
         cmds.deleteUI(ui_title)
