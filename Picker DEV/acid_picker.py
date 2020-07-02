@@ -296,17 +296,25 @@ def add_control_grid(control_set, picker_namespace):
     return grid
 
 
-
-
-def picker_ui(config_file = "default_data.json", picker_namespace = ""):
-    #**************************************************************************
+def window_cleanup(ui_title):
     #Close duplicates
     ui_title = 'acid_picker_main_window'
 
     if cmds.window(ui_title, exists=True):
         print('CLOSE duplicate window')
         cmds.deleteUI(ui_title)
-    #**************************************************************************
+
+    #delete existing preferences
+    if cmds.windowPref(ui_title, exists = True):
+        cmds.windowPref(ui_title, remove = True)
+
+
+
+
+def picker_ui(config_file = "default_data.json", picker_namespace = ""):
+
+    ui_title = 'acid_picker_main_window'
+    window_cleanup(ui_title)
     
     #load in the settings data
     settings_data = acid_picker_IO.load_data_file(config_file)
@@ -328,14 +336,8 @@ def picker_ui(config_file = "default_data.json", picker_namespace = ""):
 
 
 def config_loader_ui():
-    #**************************************************************************
-    # CLOSE if exists (avoid duplicates)
     ui_title = 'acid_picker_config_loader'
-
-    if cmds.window(ui_title, exists=True):
-        print('CLOSE duplicate window')
-        cmds.deleteUI(ui_title)
-    #**************************************************************************
+    window_cleanup(ui_title)
 
     window = cmds.window(ui_title, title="Config Loader", widthHeight=(400, 80))
 
@@ -388,6 +390,4 @@ def config_loader_ui():
     cmds.setParent('..')
 
     cmds.showWindow(window)
-
-
 
