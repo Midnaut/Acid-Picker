@@ -1,7 +1,7 @@
 # Acid-Picker
 
 Acid picker is a Maya tool for customizable control picking.
-![Acid Picker](https://i.imgur.com/c1MfjUh.gif)
+![Acid Picker](https://i.imgur.com/KNDaiRI.gif)
 
 ## Installation
 
@@ -25,7 +25,7 @@ acid_picker.config_loader_ui()
 
 This will present the config loader
 
-![Config Loader](https://i.imgur.com/IrMrnYf.png)
+![Config Loader](https://imgur.com/J7LGMGZ.png)
 
 If you dont have the default data, you can generate it, loading the default data will present you with the picker window from the file. Also, if you have referenced in a rig, and it is using a namespace, throw the name of the namespace in the box and it will configure the window to target your referenced model.
 
