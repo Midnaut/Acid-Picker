@@ -1,7 +1,7 @@
 #/--------------------------------------------------------------------------------////
 #
 #             acid_picker_IO.py 
-#             version 0.1, last modified 02-07-2020
+#             version 0.1, last modified 03-07-2020
 #             Copyright (C) 2020 Luke Davenport
 #             Email: luke.l.davenport@gmail.com
 #             Website: www.davenportcreations.com
