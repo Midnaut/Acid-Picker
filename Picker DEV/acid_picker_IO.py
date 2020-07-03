@@ -20,6 +20,11 @@
 #
 # side script loaded in to habdle file operations, should not be called directly
 # 
+#/--------------------------------------------------------------------------------////
+#                        T H A N K S:
+# Github:
+# @alexanderrichtertd - for always helping me find a new way to improve
+# @ldunham1 - many useful coding style tips
 
 import os
 import maya.cmds as cmds
@@ -80,7 +85,7 @@ def load_data_file(config_file):
 def confirm_new_data_file(advanced = False):
 
     message_string = ("Warning!\n"+
-    "This will overwrite any data in the {0} file if it exists!\n"
+    "This will overwrite any data in the {0} file if it exists!\n"+
     "Are you sure you want to proceed?")
 
     if advanced:
@@ -114,7 +119,7 @@ def load_config():
     else:
 
         message_string = (
-        "Warning! file : {0} does not exist in the config file path.\n"
+        "Warning! file : {0} does not exist in the config file path.\n"+
         "Please check and try again."
         ).format(config_file)
 

@@ -29,14 +29,18 @@
 # click : replace selection with object.
 # shift + click : add object to selection.
 # control + click : remove oject from selection.
-# 
+#
+#/--------------------------------------------------------------------------------////
+#                        T H A N K S:
+# Github:
+# @alexanderrichtertd - for always helping me find a new way to improve
+# @ldunham1 - many useful coding style tips
 
 import os
 import maya.cmds as cmds
 import copy
 import acid_picker_IO
 import maya.mel as mel
-
 import logging
 
 
@@ -111,20 +115,20 @@ def is_control_down(*args):
 
 #select that is set to add if shift is held down
 def modified_select(name):
+    print(name)
     if cmds.objExists(name):
         #add to selection
         if is_shift_down():
             cmds.select(name, add=True)
         #remove from selection
         elif is_control_down():
-            cmds.select(name, deselect = True)
+            cmds.select(name, deselect=True)
         #non modified behavior
         else:
             cmds.select(name)
     else:
-
         message_string = (
-            "Warning! Object {0} does not exist\n"+
+            "Object {0} does not exist\n"+
             "Please check your configuration."
             ).format(name)
         log.warning(message_string)
@@ -164,8 +168,7 @@ def dynamic_button_layout(settings_data, picker_namespace):
     use_super_sets = False
 
     #check if using super set style tabs
-    if ('config_advanced' in settings_data and 
-        'super_sets' in settings_data['config_advanced']):
+    if 'super_sets' in settings_data.get('config_advanced', []) :
         use_super_sets = True 
 
     if use_super_sets:
@@ -228,7 +231,7 @@ def add_super_set_tabs(settings_data, set_keys, tab_name_list,
         else:
             #error, no valid super set style
             message_string = (
-            "Error! Super Set : {0} does not contain a valid set_style.\n"
+            "Error! Super Set : {0} does not contain a valid set_style.\n"+
             "Please check and try again."
             ).format(tab_name)
 
@@ -260,7 +263,7 @@ def add_control_grid(control_set, picker_namespace):
 
     namespace_prefix = ""
     #generate namespace prefix if needed
-    if picker_namespace != "":
+    if picker_namespace:
         namespace_prefix = "{0}:".format(picker_namespace)
 
     #formatting information would ideally be standardised across the auto rigger
@@ -290,12 +293,16 @@ def add_control_grid(control_set, picker_namespace):
             #catch empties and exceeded total control counts
             if nr < control_count and controls[nr] != "_EMPTY_":
                 control_name = template.format(controls[nr])
+
                 #make the button command, holding shift will let you add to the selection
-                command_text = "acid_picker.modified_select(name = '{0}{1}')"
+                formatted_name = "{0}{1}".format(namespace_prefix, control_name)
+                #ignore to bypass the boolean def into lambdas by default
+                button_command = lambda ignore, _fn = formatted_name: modified_select(_fn)
+
                 #make the button
                 cmds.button(label = controls[nr], 
                             backgroundColor = color,
-                            command = command_text.format(namespace_prefix, control_name))
+                            command = button_command)
             else:
                 cmds.separator(style='none') #take up layout slot
 
@@ -364,11 +371,14 @@ def config_loader_ui(debug=False):
                 numberOfColumns = 3)
 
     cmds.text(label = "Examples", width = 75)
+    button_command = lambda _: acid_picker_IO.confirm_new_data_file()
     cmds.button(label="Basic",
-                command="acid_picker_IO.confirm_new_data_file()",
+                command= button_command,
                 backgroundColor = COLOR_ORANGE)
+
+    button_command = lambda _: acid_picker_IO.confirm_new_data_file(advanced=True)
     cmds.button(label="Advanced",
-                command="acid_picker_IO.confirm_new_data_file(advanced=True)",
+                command=button_command,
                 backgroundColor = COLOR_ORANGE)
     cmds.setParent("..")
 
@@ -380,9 +390,11 @@ def config_loader_ui(debug=False):
 
     cmds.text(label = "Namespace", width = 75)
     cmds.textField('object_namespace')
+
+    button_command = lambda _: mel.eval('NamespaceEditor')
     cmds.button(label = "Namespaces",
                 width = 102,
-                command= "mel.eval('NamespaceEditor')",
+                command= button_command,
                 backgroundColor = COLOR_ORANGE)
     cmds.setParent('..')
 
@@ -394,11 +406,15 @@ def config_loader_ui(debug=False):
 
     cmds.text(label = "File Name", width = 75)
     cmds.textField('config_file_name')
+
+    button_command = lambda _: acid_picker_IO.browse_files()
     cmds.button(label = "Browse",
-                command= "acid_picker_IO.browse_files()",
+                command= button_command,
                 backgroundColor = COLOR_ORANGE)
+
+    button_command = lambda _: acid_picker_IO.load_config()
     cmds.button(label = "Load",
-                command= "acid_picker_IO.load_config()",
+                command= button_command,
                 backgroundColor = COLOR_ORANGE)
     cmds.setParent('..')
 
